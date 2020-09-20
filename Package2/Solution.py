@@ -17,13 +17,14 @@ data_df.replace(to_replace={'Less than 1 year':'0', 'More than 50 years':'50', '
 #Cast numerical columns to float
 data_df = data_df.astype({'WorkWeekHrs':'int64', 'YearsCode':'int64', 'YearsCodePro':'int64', 'Age1stCode':'int64', 'ConvertedComp':'int64'})
 
+#Check number of int columns
+num_cols = data_df.select_dtypes(include=['int64']).columns
+
 #Check for correlation - use corr() and charts
-fig, axs = plt.subplots(2,len(data_df.columns),figsize=(16,8))
+fig, axs = plt.subplots(2,len(num_cols),figsize=(16,8))
 fig.tight_layout(h_pad=4.0, w_pad=4.0)
 fig_list = fig.axes
 current_fig = 0
-
-num_cols = data_df.select_dtypes(include=['int64']).columns
 
 for no, main_col in enumerate(num_cols):
     for other_col in num_cols[no+1:]:
@@ -32,9 +33,19 @@ for no, main_col in enumerate(num_cols):
         fig_list[current_fig].set_ylabel(other_col, fontsize=8)
         current_fig += 1
 
-plt.show()
-
-print(data_df.corr())
+#plt.show()
+#print(data_df.corr())
 
 #Chosen variables [ ConvertedComp, Age1stCode ] - independent variables; ['YearsCode'] - dependend variables
 
+#EX 2
+
+#Replace text values to numercial data
+data_df['FizzBuzz'].replace(to_replace={'Yes': '1', 'No': '0'}, inplace=True)
+
+#Replace values via one-hot-encoding method
+ohe_df = pd.get_dummies(data_df['Student'])
+data_df.drop('Student', axis = 1, inplace=True)
+data_df = data_df.join(ohe_df)
+
+print(data_df)
