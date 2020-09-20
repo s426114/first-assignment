@@ -3,6 +3,24 @@ import numpy as np
 import matplotlib.pyplot as plt
 from pathlib import Path
 
+
+def plot_dataframe(data_df, columns, rows_no): 
+    #Create plots for selected columns from passed dataframe
+    fig, axs = plt.subplots(rows_no, len(columns), figsize=(16,8))
+    fig.tight_layout(h_pad=4.0, w_pad=4.0)
+    fig_list = fig.axes
+    current_fig = 0
+
+    for no, main_col in enumerate(columns):
+        for other_col in columns[no+1:]:
+            data_df.plot(x=main_col, y=other_col, marker='x', color='b', markersize=1, linestyle='', ax=fig_list[current_fig])
+            fig_list[current_fig].set_xlabel(main_col, fontsize=8)
+            fig_list[current_fig].set_ylabel(other_col, fontsize=8)
+            current_fig += 1
+
+    plt.show()
+
+
 #EX 1
 
 #Read data
@@ -17,26 +35,13 @@ data_df.replace(to_replace={'Less than 1 year':'0', 'More than 50 years':'50', '
 #Cast numerical columns to float
 data_df = data_df.astype({'WorkWeekHrs':'int64', 'YearsCode':'int64', 'YearsCodePro':'int64', 'Age1stCode':'int64', 'ConvertedComp':'int64'})
 
-#Check number of int columns
-num_cols = data_df.select_dtypes(include=['int64']).columns
-
 #Check for correlation - use corr() and charts
-fig, axs = plt.subplots(2,len(num_cols),figsize=(16,8))
-fig.tight_layout(h_pad=4.0, w_pad=4.0)
-fig_list = fig.axes
-current_fig = 0
-
-for no, main_col in enumerate(num_cols):
-    for other_col in num_cols[no+1:]:
-        data_df.plot(x=main_col, y=other_col, marker='x', color='b', markersize=1, linestyle='', ax=fig_list[current_fig])
-        fig_list[current_fig].set_xlabel(main_col, fontsize=8)
-        fig_list[current_fig].set_ylabel(other_col, fontsize=8)
-        current_fig += 1
-
-#plt.show()
+#plot_dataframe(data_df, data_df.select_dtypes(include=['int64']).columns, 2)
 #print(data_df.corr())
 
 #Chosen variables [ ConvertedComp, Age1stCode ] - independent variables; ['YearsCode'] - dependend variables
+dep_var = ['Age1stCode', 'ConvertedComp']
+indep_var = ['YearsCode']
 
 #EX 2
 
@@ -48,4 +53,20 @@ ohe_df = pd.get_dummies(data_df['Student'])
 data_df.drop('Student', axis = 1, inplace=True)
 data_df = data_df.join(ohe_df)
 
-print(data_df)
+#EX 3
+
+#Calc standard dev and mean for independent variables and remove outliers
+mean = np.mean(data_df['ConvertedComp'])
+st_dev = np.std(data_df['ConvertedComp'])
+data_df = data_df[(data_df['ConvertedComp'] >= (mean - 3 * st_dev)) & (data_df['ConvertedComp'] <= (mean + 3 * st_dev))]
+
+mean = np.mean(data_df['Age1stCode'])
+st_dev = np.std(data_df['Age1stCode'])
+data_df = data_df[(data_df['Age1stCode'] >= (mean - 5 * st_dev)) & (data_df['Age1stCode'] <= (mean + 5 * st_dev))]
+
+
+#Use quantile to remove outliers from YearsCode
+#data_df = data_df[(data_df['YearsCode'] >= data_df['YearsCode'].quantile(.15)) & (data_df['YearsCode'] <= data_df['YearsCode'].quantile(.85))]
+
+#Create plots for numerical data one more time
+plot_dataframe(data_df, (indep_var + dep_var), 1)
