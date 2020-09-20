@@ -8,7 +8,7 @@ data_df = pd.read_csv(Path(Path.cwd() / "survey_results_public.csv"), usecols=['
 
 #Drop empty records and convert float columns to integers (we want whole hours without minutes)
 data_df.dropna(inplace=True, how='any')
-data_df.astype({'WorkWeekHrs':'int32', 'CodeRevHrs':'int32'}, copy=False)
+data_df = data_df.astype({'WorkWeekHrs':'int32', 'CodeRevHrs':'int32'}, copy=False)
 
 #Remove records where CodeRevHrs > WorkWeekHrs & WorkWeekHrs >= (24*7)
 data_df = data_df[(data_df['WorkWeekHrs'] < 168) & (data_df['CodeRevHrs'] < data_df['WorkWeekHrs'])]
@@ -24,6 +24,6 @@ fig, axs = plt.subplots(len(df_groups))
 fig.tight_layout(h_pad=4.0)
 
 for (name, df), ax in zip(df_groups, axs.flat):
-    df.plot(x='WorkWeekHrs', y='CodeRevHrs', marker='x', color='b', markersize=0.3, linestyle='', title=('Are you a student? : ' + name), ax=ax)
+    data_df.plot(x='WorkWeekHrs', y='CodeRevHrs', marker='x', color='b', markersize=0.3, linestyle='', title=('Are you a student? : ' + name), ax=ax)
 
 plt.show()

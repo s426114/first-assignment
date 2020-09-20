@@ -338,3 +338,7 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+
+# Other files (source for assignments)
+survey_results_public.csv
+survey_results_schema.csv
