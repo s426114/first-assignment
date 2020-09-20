@@ -1,7 +1,11 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import seaborn as sns
 from pathlib import Path
+from sklearn import linear_model, preprocessing
+from sklearn.metrics import mean_squared_error
+from scipy import stats
 
 
 def plot_dataframe(data_df, columns, rows_no): 
@@ -69,4 +73,11 @@ data_df = data_df[(data_df['Age1stCode'] >= (mean - 5 * st_dev)) & (data_df['Age
 #data_df = data_df[(data_df['YearsCode'] >= data_df['YearsCode'].quantile(.15)) & (data_df['YearsCode'] <= data_df['YearsCode'].quantile(.85))]
 
 #Create plots for numerical data one more time
-plot_dataframe(data_df, (indep_var + dep_var), 1)
+#plot_dataframe(data_df, (indep_var + dep_var), 1)
+
+#EX4 & EX5
+
+#Create linear regression models - predict values for sample data
+
+sample_list = [10, 20, 30, 40]
+reg_models = {'model':[],'columns':[]}
