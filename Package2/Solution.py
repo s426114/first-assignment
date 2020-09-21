@@ -44,8 +44,9 @@ data_df = data_df.astype({'WorkWeekHrs':'int64', 'YearsCode':'int64', 'YearsCode
 #print(data_df.corr())
 
 #Chosen variables [ ConvertedComp, Age1stCode ] - independent variables; ['YearsCode'] - dependend variables
-dep_var = ['Age1stCode', 'ConvertedComp']
-indep_var = ['YearsCode']
+dep_var_num = ['Age1stCode', 'ConvertedComp']
+dep_var_other = ['FizzBuzz', 'No', 'Yes, full-time', 'Yes, part-time']
+indep_var_num = ['YearsCode']
 
 #EX 2
 
@@ -73,11 +74,23 @@ data_df = data_df[(data_df['Age1stCode'] >= (mean - 5 * st_dev)) & (data_df['Age
 #data_df = data_df[(data_df['YearsCode'] >= data_df['YearsCode'].quantile(.15)) & (data_df['YearsCode'] <= data_df['YearsCode'].quantile(.85))]
 
 #Create plots for numerical data one more time
-#plot_dataframe(data_df, (indep_var + dep_var), 1)
+#plot_dataframe(data_df, (indep_var_num + dep_var_num), 1)
 
 #EX4 & EX5
 
-#Create linear regression models - predict values for sample data
+#Create linear regression models & predict values
+regression_model = linear_model.LinearRegression()
+regression_model.fit(data_df[['Age1stCode']], data_df[indep_var_num])
+data_df['Prediction_1'] = regression_model.predict(data_df[['Age1stCode']])
 
-sample_list = [10, 20, 30, 40]
-reg_models = {'model':[],'columns':[]}
+regression_model = linear_model.LinearRegression()
+regression_model.fit(data_df[dep_var_num], data_df[indep_var_num])
+data_df['Prediction_2'] = regression_model.predict(data_df[dep_var_num])
+
+regression_model = linear_model.LinearRegression()
+regression_model.fit(data_df[dep_var_num+dep_var_other], data_df[indep_var_num])
+data_df['Prediction_3'] = regression_model.predict(data_df[dep_var_num+dep_var_other])
+
+mse_data = {"one_var": mean_squared_error(data_df[indep_var_num], data_df['Prediction_1']),
+            "two_vars": mean_squared_error(data_df[indep_var_num], data_df['Prediction_2']),
+            "all_vars": mean_squared_error(data_df[indep_var_num], data_df['Prediction_3'])}
