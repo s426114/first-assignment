@@ -67,7 +67,7 @@ data_df = data_df[(data_df['ConvertedComp'] >= (mean - 3 * st_dev)) & (data_df['
 
 mean = np.mean(data_df['Age1stCode'])
 st_dev = np.std(data_df['Age1stCode'])
-data_df = data_df[(data_df['Age1stCode'] >= (mean - 5 * st_dev)) & (data_df['Age1stCode'] <= (mean + 5 * st_dev))]
+data_df = data_df[(data_df['Age1stCode'] >= (mean - 3 * st_dev)) & (data_df['Age1stCode'] <= (mean + 3 * st_dev))]
 
 
 #Use quantile to remove outliers from YearsCode
@@ -94,3 +94,8 @@ data_df['Prediction_3'] = regression_model.predict(data_df[dep_var_num+dep_var_o
 mse_data = {"one_var": mean_squared_error(data_df[indep_var_num], data_df['Prediction_1']),
             "two_vars": mean_squared_error(data_df[indep_var_num], data_df['Prediction_2']),
             "all_vars": mean_squared_error(data_df[indep_var_num], data_df['Prediction_3'])}
+
+#Use seaborn to plot prediction plot for one var linear regression
+plot = sns.PairGrid(data_df, y_vars=["Age1stCode"], x_vars=["YearsCode", "Prediction_1"], height=4)
+plot.map(sns.regplot, color=".4")
+plt.show()
