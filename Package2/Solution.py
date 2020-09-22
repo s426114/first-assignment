@@ -96,4 +96,7 @@ mse_data = {"one_var": mean_squared_error(data_df[indep_var_num], data_df['Predi
             "two_vars": mean_squared_error(data_df[indep_var_num], data_df['Prediction_2']),
             "all_vars": mean_squared_error(data_df[indep_var_num], data_df['Prediction_3'])}
 
-print(mse_data)
+#Use seaborn to plot prediction plot for one var linear regression
+plot = sns.PairGrid(data_df, y_vars=["Age1stCode"], x_vars=["YearsCode", "Prediction_1"], height=4)
+plot.map(sns.regplot, color=".4")
+plt.show()
